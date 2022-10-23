@@ -11,8 +11,8 @@ public class DateUtils {
 
     public static String getRolledFormattedDate(int monthsToRoll) {
         Calendar calendar = Calendar.getInstance();
-        calendar.roll(Calendar.MONTH, monthsToRoll);
-        return new SimpleDateFormat("LLLL yyyy", Locale.getDefault()).format(calendar.getTime());
+        calendar.roll(Calendar.MONTH, -monthsToRoll);
+        return new SimpleDateFormat("LLLL yyyy", new Locale("ru", "RU")).format(calendar.getTime());
 
     }
 }

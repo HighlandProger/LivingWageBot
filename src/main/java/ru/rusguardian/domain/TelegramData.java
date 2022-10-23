@@ -2,31 +2,19 @@ package ru.rusguardian.domain;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Objects;
 
-@Entity
-@Table(name = "ncs_bot.telegram_data")
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TelegramData extends GenericEntity<Long> {
+public class TelegramData {
 
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "text_message")
     private String textMessage;
-
-    @Column(name = "photo_id")
     private String photoId;
-
-    @Column(name = "sticker_id")
     private String stickerId;
 
     @Override

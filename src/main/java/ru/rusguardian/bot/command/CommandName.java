@@ -11,8 +11,9 @@ public enum CommandName {
     DEFAULT_FAMILY("/defaultFamily"),
     CHANGE_FAMILY("/changeFamily"),
     CONFIRM_FAMILY("/confirmFamily"),
-    SETTING_SALARIES("/settingSalaries"),
-    ANSWER("/answer");
+    SETTING_SALARIES_QUESTION("/settingSalariesQuestion"),
+    SETTING_SALARIES_ANSWER("/settingSalariesAnswer"),
+    RESULT("/resultCommand");
 
     private final String name;
 

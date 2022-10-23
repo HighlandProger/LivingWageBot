@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.Status;
-import ru.rusguardian.domain.TelegramData;
 
 @Component
 @Slf4j
@@ -26,13 +25,18 @@ public class _1_ChooseRegionCommand extends Command {
 
         changeUserStatus(update, Status.SETTING_REGION);
 
-        TelegramData welcomeData = appDataService.getTelegramDataByName(TELEGRAM_DATA_NAME).orElseThrow();
-
-        String returnMessage = welcomeData.getTextMessage();
-
-        SendMessage sendMessage = getSimpleSendMessage(update, returnMessage);
+        SendMessage sendMessage = getSendMessage(update);
 
         livingWageBot.execute(sendMessage);
+    }
+
+    private SendMessage getSendMessage(Update update) {
+        String callbackMessage = getCallbackMessage();
+        return getSimpleSendMessage(update, callbackMessage);
+    }
+
+    private String getCallbackMessage() {
+        return telegramDataService.getTelegramDataByName(TELEGRAM_DATA_NAME).getTextMessage();
     }
 
 }

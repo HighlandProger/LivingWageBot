@@ -26,6 +26,6 @@ public class WebToDataServiceImpl {
         log.info("Updating data");
         Document document = htmlService.getHtmlDoc();
         List<RegionLivingWage> regionLivingWages = HtmlUtils.getRegionsLivingWages(document);
-        dataService.saveAll(regionLivingWages);
+//        dataService.saveAll(regionLivingWages);
     }
 }

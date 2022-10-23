@@ -11,8 +11,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.LivingWageBot;
 import ru.rusguardian.domain.Status;
-import ru.rusguardian.service.data.AppDataService;
 import ru.rusguardian.service.data.ChatServiceImpl;
+import ru.rusguardian.service.data.RegionLivingWageServiceImpl;
+import ru.rusguardian.service.data.TelegramDataServiceImpl;
 import ru.rusguardian.util.TelegramUtils;
 
 import java.util.ArrayList;
@@ -29,7 +30,10 @@ public abstract class Command {
     protected ChatServiceImpl chatService;
 
     @Autowired
-    protected AppDataService appDataService;
+    protected RegionLivingWageServiceImpl regionLivingWageService;
+
+    @Autowired
+    protected TelegramDataServiceImpl telegramDataService;
 
     protected abstract void mainExecute(Update update) throws TelegramApiException;
 

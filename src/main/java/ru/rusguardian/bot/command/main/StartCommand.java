@@ -9,10 +9,10 @@ import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.Status;
-import ru.rusguardian.domain.TelegramData;
 import ru.rusguardian.service.data.exception.EntityNotFoundException;
 import ru.rusguardian.util.TelegramUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,12 +21,10 @@ import java.util.Map;
 public class StartCommand extends Command {
 
     private static final String TELEGRAM_DATA_NAME = "WELCOME";
-    private static final String CHOOSE_REGION_BUTTON_NAME = "Выбрать регион";
-    private static final String CHOOSE_REGION_BUTTON_CALLBACK_DATA = "Выбрать регион";
     private static final Map<String, String> inlineCommandButtonsMap = new HashMap<>();
 
     static {
-        inlineCommandButtonsMap.put(CHOOSE_REGION_BUTTON_NAME, CHOOSE_REGION_BUTTON_CALLBACK_DATA);
+        inlineCommandButtonsMap.put("Выбрать регион", "Выбрать регион");
     }
 
     @Override
@@ -39,10 +37,7 @@ public class StartCommand extends Command {
 
         createChatIfNotExists(update);
 
-        TelegramData welcomeData = appDataService.getTelegramDataByName(TELEGRAM_DATA_NAME).orElseThrow();
-        String returnMessage = String.format(welcomeData.getTextMessage(), update.getMessage().getFrom().getFirstName());
-
-        SendMessage sendMessage = getSendMessageWithInlineKeyboard(update, returnMessage, inlineCommandButtonsMap);
+        SendMessage sendMessage = getSendMessage(update);
 
         livingWageBot.execute(sendMessage);
     }
@@ -53,11 +48,24 @@ public class StartCommand extends Command {
         String username = TelegramUtils.getUsername(update);
         try {
             chatService.findById(chatId);
-            chatService.updateChatStatus(chatId, Status.NEW);
+            changeUserStatus(update, Status.NEW);
         } catch (EntityNotFoundException e) {
             log.debug("Chat with id = {} not found", chatId);
-            chatService.create(new Chat(chatId, username, Status.NEW, 1, 0, 0, null, null));
+            Chat defaultChat = new Chat(chatId, username, Status.NEW, 1, 0, 0, null, new ArrayList<>());
+            chatService.create(defaultChat);
         }
+    }
+
+    private SendMessage getSendMessage(Update update){
+
+        String callbackMessage = getCallbackMessage(update);
+        return getSendMessageWithInlineKeyboard(update, callbackMessage, inlineCommandButtonsMap);
+    }
+
+    private String getCallbackMessage(Update update){
+        String userFirstName = update.getMessage().getFrom().getFirstName();
+        String patternMessage = telegramDataService.getTelegramDataByName(TELEGRAM_DATA_NAME).getTextMessage();
+        return String.format(patternMessage, userFirstName);
     }
 
 }

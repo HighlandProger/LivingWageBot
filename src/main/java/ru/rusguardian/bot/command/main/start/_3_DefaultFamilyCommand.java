@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
@@ -15,7 +16,7 @@ import ru.rusguardian.util.TelegramUtils;
 @Component
 public class _3_DefaultFamilyCommand extends Command {
 
-    private static final String MESSAGE = "Теперь введите свой состав семьи и нажмите кнопку \"Подтвердить,\"";
+    private static final String SET_FAMILY_TELEGRAM_DATA = "SET_FAMILY";
 
     @Autowired
     private RegionLivingWageServiceImpl regionServiceImpl;
@@ -28,13 +29,20 @@ public class _3_DefaultFamilyCommand extends Command {
     @Override
     protected void mainExecute(Update update) throws TelegramApiException {
 
-        Chat chat = chatService.findById(TelegramUtils.getChatId(update));
-
-        SendMessage sendMessage = getSimpleSendMessage(update, MESSAGE);
-        sendMessage.setReplyMarkup(TelegramEditMessageUtils.getFamilyCountInlineKeyboard(chat));
-        sendMessage.setParseMode("HTML");
-
+        SendMessage sendMessage = getSetFamilySendMessage(update);
         livingWageBot.execute(sendMessage);
     }
 
+    private SendMessage getSetFamilySendMessage(Update update) {
+        String message = telegramDataService.getTelegramDataByName(SET_FAMILY_TELEGRAM_DATA).getTextMessage();
+        SendMessage sendMessage = getSimpleSendMessage(update, message);
+        sendMessage.setReplyMarkup(getSetFamilyInlineKeyboard(update));
+
+        return sendMessage;
+    }
+
+    private InlineKeyboardMarkup getSetFamilyInlineKeyboard(Update update) {
+        Chat chat = chatService.findById(TelegramUtils.getChatId(update));
+        return TelegramEditMessageUtils.getFamilyCountInlineKeyboard(chat);
+    }
 }

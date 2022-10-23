@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.Status;
 import ru.rusguardian.service.data.ChatServiceImpl;
+import ru.rusguardian.service.data.exception.EntityNotFoundException;
 import ru.rusguardian.util.TelegramUtils;
 
 import java.util.*;
@@ -66,7 +67,7 @@ public class SendBotMessageService {
                     return CommandName.CHANGE_FAMILY;
                 }
                 if (isStatusSettingSalaries(chat)) {
-                    return CommandName.SETTING_SALARIES;
+                    return CommandName.SETTING_SALARIES_QUESTION;
                 }
 
                 throw new NoSuchElementException();
@@ -74,6 +75,8 @@ public class SendBotMessageService {
             return commandNameOptional.get();
         } catch (NoSuchElementException e) {
             log.warn("Command with name {} not found", incomeMessage);
+        } catch (EntityNotFoundException e){
+            log.info(e.getMessage());
         }
 
         return CommandName.NOT_FOUND;
@@ -92,12 +95,7 @@ public class SendBotMessageService {
     }
 
     private String getCallbackQuery(Update update) {
-        String data = update.getCallbackQuery().getData();
-        String commandType = data.split("_")[0];
-        return switch (commandType) {
-            case "Подтвердить" -> "/confirmFamily";
-            default -> update.getCallbackQuery().getData();
-        };
+        return update.getCallbackQuery().getData();
     }
 }
 

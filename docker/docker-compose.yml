@@ -1,0 +1,11 @@
+version: "3"
+services:
+  living_wage_bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      
+    image: living-wage-bot
+    network_mode: host
+
+    restart: always

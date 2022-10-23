@@ -12,39 +12,93 @@ import ru.rusguardian.domain.Status;
 import ru.rusguardian.util.DateUtils;
 import ru.rusguardian.util.TelegramUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class _6_SettingSalariesCommand extends Command {
 
-    private static final String MONTH_SALARY_QUESTION = "Пожалуйста, введите общий доход Вашей семьи за %s г.";
+    private static final String MONTH_SALARY_QUESTION_TELEGRAM_DATA = "MONTH_SALARY_QUESTION";
+    private static final String DATA_ACCEPTED_TELEGRAM_DATA = "DATA_ACCEPTED";
+    private static final String DATA_DECLINED_TELEGRAM_DATA = "DATA_DECLINED";
+
+    private static final Map<String, String> commandButtonsMap = new HashMap<>();
+
+    static {
+        commandButtonsMap.put("/resultCommand", "Посмотреть результат");
+    }
 
     @Override
     protected CommandName getType() {
-        return CommandName.SETTING_SALARIES;
+        return CommandName.SETTING_SALARIES_QUESTION;
     }
 
     @Override
     protected void mainExecute(Update update) throws TelegramApiException {
 
         Chat chat = chatService.findById(TelegramUtils.getChatId(update));
-        String monthSalaryQuestion = getMonthSalaryQuestion(chat);
-        SendMessage sendMessage = getSimpleSendMessage(update, monthSalaryQuestion);
+        List<Integer> salaries = chat.getSalaries();
+
+        try {
+            addSalaryAnswer(update, chat, salaries);
+        } catch (NumberFormatException e){
+            SendMessage sendMessage = getDeclinedSendMessage(update);
+            livingWageBot.execute(sendMessage);
+        }
+
+        SendMessage sendMessage = getMontSalaryQuestionSendMessage(update, chat);
+
+        if (salaries.size() == 3) {
+            sendMessage = getExecutedSendMessage(update);
+            chatService.updateChatStatus(chat.getId(), Status.EXECUTED);
+        }
 
         livingWageBot.execute(sendMessage);
-        chat.setStatus(Status.SETTING_SALARIES);
+    }
+
+    private SendMessage getMontSalaryQuestionSendMessage(Update update, Chat chat) {
+        String monthSalaryQuestion = getMonthSalaryQuestion(chat);
+        return getSimpleSendMessage(update, monthSalaryQuestion);
+    }
+
+
+    private SendMessage getExecutedSendMessage(Update update) {
+        String message = telegramDataService.getTelegramDataByName(DATA_ACCEPTED_TELEGRAM_DATA).getTextMessage();
+        SendMessage sendMessage = getSimpleSendMessage(update, message);
+        sendMessage.setReplyMarkup(getInlineKeyboard(commandButtonsMap));
+
+        return sendMessage;
+    }
+
+    private SendMessage getDeclinedSendMessage(Update update){
+        String message = telegramDataService.getTelegramDataByName(DATA_DECLINED_TELEGRAM_DATA).getTextMessage();
+
+        return getSimpleSendMessage(update, message);
+    }
+
+    private void addSalaryAnswer(Update update, Chat chat, List<Integer> salaryAnswers) {
+        int salaryAnswer = Integer.parseInt(TelegramUtils.getTextFromUpdate(update));
+        salaryAnswers.add(salaryAnswer);
+        chat.setSalaries(salaryAnswers);
         chatService.updateChat(chat);
     }
 
-    private String getMonthSalaryQuestion(Chat chat) {
-        List<Integer> clientSalaries = chat.getSalaries();
-        int monthsToRoll = 3 - clientSalaries.size();
+    protected String getMonthSalaryQuestion(Chat chat) {
 
-        String monthAndYear = DateUtils.getRolledFormattedDate(monthsToRoll);
-        return String.format(MONTH_SALARY_QUESTION, monthAndYear);
+        String messagePattern = telegramDataService.getTelegramDataByName(MONTH_SALARY_QUESTION_TELEGRAM_DATA).getTextMessage();
+        String parsedMonthAndYear = getParsedMonthAndYear(chat);
+
+        return String.format(messagePattern, parsedMonthAndYear);
     }
 
-    private int getLivingWagesSum(Chat chat) {
+    private String getParsedMonthAndYear(Chat chat) {
+        List<Integer> clientSalaries = chat.getSalaries();
+        int monthsToRoll = 3 - clientSalaries.size();
+        return DateUtils.getRolledFormattedDate(monthsToRoll);
+    }
+
+    protected int getLivingWagesSum(Chat chat) {
 
         RegionLivingWage regionLivingWage = chat.getRegionLivingWage();
         int employeesSum = chat.getEmployeeCount() * regionLivingWage.getEmployeeLivingWage();

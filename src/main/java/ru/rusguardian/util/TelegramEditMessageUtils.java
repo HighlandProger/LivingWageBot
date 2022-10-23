@@ -83,7 +83,7 @@ public class TelegramEditMessageUtils {
 
         InlineKeyboardButton textButton = InlineKeyboardButton.builder()
                 .text("Подтвердить")
-                .callbackData("Подтвердить")
+                .callbackData("/confirmFamily")
                 .build();
 
         return List.of(textButton);

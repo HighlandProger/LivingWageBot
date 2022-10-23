@@ -1,27 +1,58 @@
 package ru.rusguardian.service.data;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.rusguardian.domain.RegionLivingWage;
 import ru.rusguardian.domain.TelegramData;
-import ru.rusguardian.repository.TelegramDataRepository;
 import ru.rusguardian.service.data.exception.EntityNotFoundException;
+import ru.rusguardian.util.FileUtils;
 
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class TelegramDataServiceImpl extends CrudService<TelegramData> {
+public class TelegramDataServiceImpl {
 
-    @Autowired
-    TelegramDataRepository telegramDataRepository;
+    private static final String DATA_FILE_PATH = "/data/telegram_data.json";
+    private List<TelegramData> telegramDataList = new ArrayList<>();
 
-    public TelegramData findByName(String name) {
-        log.debug("Searching for telegram data with name = {}", name);
-        Optional<TelegramData> entity = telegramDataRepository.findByName(name);
-        if (entity.isEmpty()) {
-            throw new EntityNotFoundException("Telegram data with name = " + name + " not exists");
+    @PostConstruct
+    private void initData() {
+        String text = FileUtils.getTextFromResourcesFile(DATA_FILE_PATH);
+        JsonArray data = JsonParser.parseString(text).getAsJsonArray();
+        for(JsonElement element : data){
+            JsonObject object = element.getAsJsonObject();
+            TelegramData telegramData = new TelegramData();
+            telegramData.setName(object.get("name").getAsString());
+            telegramData.setTextMessage(object.get("textMessage").getAsString());
+            telegramData.setPhotoId(object.get("photoId").getAsString());
+            telegramData.setStickerId(object.get("stickerId").getAsString());
+
+            telegramDataList.add(telegramData);
         }
-        return entity.get();
     }
+
+    public TelegramData getTelegramDataByName(String name) {
+        Optional<TelegramData> telegramDataOptional = telegramDataList.stream().filter(s -> s.getName().equals(name)).findFirst();
+        if(telegramDataOptional.isEmpty()){
+            log.error("Telegram data with name {} not found", name);
+            throw new NoSuchElementException();
+        }
+        return telegramDataOptional.get();
+    }
+
+    public List<TelegramData> getTelegramData() {
+        return this.telegramDataList;
+    }
+
 }

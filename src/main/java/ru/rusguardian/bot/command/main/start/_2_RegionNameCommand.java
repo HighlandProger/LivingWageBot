@@ -12,21 +12,21 @@ import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.RegionLivingWage;
-import ru.rusguardian.domain.Status;
 import ru.rusguardian.util.TelegramUtils;
 
+import java.rmi.NoSuchObjectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
+
+import static ru.rusguardian.domain.Status.SETTING_FAMILY;
 
 @Component
 @Slf4j
 public class _2_RegionNameCommand extends Command {
 
-    private static final String SUCCESS_MESSAGE = "Отлично!";
-    private static final String ERROR_MESSAGE = "Извините. Не могу распознать введенный Вами регион." +
-            " Попробуйте найти его из выпадающего списка или введите снова.";
+    private static final String SUCCESS_TELEGRAM_DATA = "SUCCESS_REGION_NAME";
+    private static final String ERROR_TELEGRAM_DATA = "ERROR_REGION_NAME";
 
     @Autowired
     private _1_ChooseRegionCommand chooseRegionCommand;
@@ -43,52 +43,65 @@ public class _2_RegionNameCommand extends Command {
     protected void mainExecute(Update update) throws TelegramApiException {
 
         String regionName = TelegramUtils.getTextFromUpdate(update);
-        Optional<RegionLivingWage> regionLivingWageOptional = appDataService.getRegionLivingWageByName(regionName);
-        if (regionLivingWageOptional.isPresent()) {
-            nextStep(update, regionLivingWageOptional.get());
-        } else {
+        try {
+            RegionLivingWage regionLivingWage = regionLivingWageService.getRegionLivingWageByName(regionName);
+            nextStep(update, regionLivingWage);
+        } catch (NoSuchObjectException e) {
             previousStep(update, regionName);
         }
 
     }
 
-    private void nextStep(Update update, RegionLivingWage regionLivingWage) {
-        try {
-            SendMessage sendMessage = getSimpleSendMessage(update, SUCCESS_MESSAGE);
-            Chat chat = chatService.findById(TelegramUtils.getChatId(update));
-            chat.setRegionLivingWage(regionLivingWage);
-            chatService.updateChat(chat);
-            livingWageBot.execute(sendMessage);
-            defaultFamilyCommand.mainExecute(update);
-            changeUserStatus(update, Status.SETTING_FAMILY);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+    private void nextStep(Update update, RegionLivingWage regionLivingWage) throws TelegramApiException {
+
+        updateChat(update, regionLivingWage);
+
+        livingWageBot.execute(getSuccessSendMessage(update));
+
+        defaultFamilyCommand.mainExecute(update);
     }
 
-    private void previousStep(Update update, String wrongRegionName) {
-        try {
-            SendMessage sendMessage = getSimpleSendMessage(update, ERROR_MESSAGE);
-            List<String> possibleRegionNames = getPossibleRegionNames(wrongRegionName);
-            InlineKeyboardMarkup inlineKeyboardMarkup = getPossibleRegionsInlineKeyboard(possibleRegionNames);
-            sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-            livingWageBot.execute(sendMessage);
-            chooseRegionCommand.mainExecute(update);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+    private void previousStep(Update update, String wrongRegionName) throws TelegramApiException {
+
+        livingWageBot.execute(getErrorSendMessage(update, wrongRegionName));
+
+        chooseRegionCommand.mainExecute(update);
+    }
+
+    private void updateChat(Update update, RegionLivingWage regionLivingWage) {
+        Chat chat = chatService.findById(TelegramUtils.getChatId(update));
+        chat.setRegionLivingWage(regionLivingWage);
+        chat.setStatus(SETTING_FAMILY);
+        chatService.updateChat(chat);
     }
 
     private List<String> getPossibleRegionNames(String wrongRegionName) {
         List<String> possibleRegionNames = new ArrayList<>();
         RatcliffObershelp metric = new RatcliffObershelp();
-        for (RegionLivingWage regionLivingWage : appDataService.getRegionLivingWages()) {
+        for (RegionLivingWage regionLivingWage : regionLivingWageService.getRegionLivingWages()) {
             String regionName = regionLivingWage.getRegionName();
             double similarityPercent = metric.similarity(regionName.toUpperCase(Locale.ROOT), wrongRegionName.toUpperCase(Locale.ROOT));
-            if (similarityPercent > 0.5) {
+            if (similarityPercent > 0.3) {
                 possibleRegionNames.add(regionName);
             }
         }
         return possibleRegionNames;
+    }
+
+    private SendMessage getSuccessSendMessage(Update update) {
+        String message = telegramDataService.getTelegramDataByName(SUCCESS_TELEGRAM_DATA).getTextMessage();
+        return getSimpleSendMessage(update, message);
+    }
+
+    private SendMessage getErrorSendMessage(Update update, String wrongRegionName) {
+        String message = telegramDataService.getTelegramDataByName(ERROR_TELEGRAM_DATA).getTextMessage();
+
+        SendMessage sendMessage = getSimpleSendMessage(update, message);
+
+        List<String> possibleRegionNames = getPossibleRegionNames(wrongRegionName);
+        InlineKeyboardMarkup inlineKeyboardMarkup = getPossibleRegionsInlineKeyboard(possibleRegionNames);
+        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+
+        return sendMessage;
     }
 }
