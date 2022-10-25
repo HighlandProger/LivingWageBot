@@ -16,7 +16,7 @@ public class ChatServiceImpl {
 
     private final List<Chat> chats = new ArrayList<>();
 
-    public Chat create(Chat chat){
+    public Chat create(Chat chat) {
         chats.add(chat);
         return chat;
     }

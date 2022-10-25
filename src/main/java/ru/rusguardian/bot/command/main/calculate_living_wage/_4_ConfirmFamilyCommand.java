@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command.main.start;
+package ru.rusguardian.bot.command.main.calculate_living_wage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,15 +9,18 @@ import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.Status;
+import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.util.TelegramUtils;
 
-@Component
-public class _5_ConfirmFamilyCommand extends Command {
+import static ru.rusguardian.domain.TelegramDataEnum.SALARY_QUESTION;
 
-    private static final String SALARY_QUESTION_TELEGRAM_DATA = "SALARY_QUESTION";
+@Component
+public class _4_ConfirmFamilyCommand extends Command {
+
+    private static final TelegramDataEnum TELEGRAM_DATA = SALARY_QUESTION;
 
     @Autowired
-    private _6_SettingSalariesCommand settingSalariesCommand;
+    private _5_SettingSalariesCommand settingSalariesCommand;
 
     @Override
     protected CommandName getType() {
@@ -37,7 +40,7 @@ public class _5_ConfirmFamilyCommand extends Command {
 
     private SendMessage getFirstSendMessage(Update update, Chat chat) {
         int chatLivingWage = settingSalariesCommand.getLivingWagesSum(chat);
-        String salaryQuestionMessage = telegramDataService.getTelegramDataByName(SALARY_QUESTION_TELEGRAM_DATA).getTextMessage();
+        String salaryQuestionMessage = TELEGRAM_DATA.getTextMessage();
         SendMessage sendMessage = getSimpleSendMessage(update, String.format(salaryQuestionMessage, chatLivingWage));
         sendMessage.enableHtml(true);
         return sendMessage;

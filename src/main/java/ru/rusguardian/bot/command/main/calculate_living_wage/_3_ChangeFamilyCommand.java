@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command.main.start;
+package ru.rusguardian.bot.command.main.calculate_living_wage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -9,16 +9,19 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.Chat;
+import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.util.TelegramEditMessageUtils;
 import ru.rusguardian.util.TelegramUtils;
 
 import java.util.NoSuchElementException;
 
+import static ru.rusguardian.domain.TelegramDataEnum.NEGATIVE_COUNT;
+
 @Component
 @Slf4j
-public class _4_ChangeFamilyCommand extends Command {
+public class _3_ChangeFamilyCommand extends Command {
 
-    private static final String NEGATIVE_COUNT_TELEGRAM_DATA = "NEGATIVE_COUNT_TELEGRAM_DATA";
+    private static final TelegramDataEnum TELEGRAM_DATA = NEGATIVE_COUNT;
 
     @Override
     protected CommandName getType() {
@@ -96,7 +99,7 @@ public class _4_ChangeFamilyCommand extends Command {
 
     private int removeWithCheck(int count) {
         if (count == 0) {
-            String negativeCountAttentionMessage = telegramDataService.getTelegramDataByName(NEGATIVE_COUNT_TELEGRAM_DATA).getTextMessage();
+            String negativeCountAttentionMessage = TELEGRAM_DATA.getTextMessage();
             throw new IndexOutOfBoundsException(negativeCountAttentionMessage);
         }
         return --count;

@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command.main.start;
+package ru.rusguardian.bot.command.main.calculate_living_wage;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,6 +9,7 @@ import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.RegionLivingWage;
 import ru.rusguardian.domain.Status;
+import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.util.DateUtils;
 import ru.rusguardian.util.TelegramUtils;
 
@@ -16,12 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
-public class _6_SettingSalariesCommand extends Command {
+import static ru.rusguardian.domain.TelegramDataEnum.*;
 
-    private static final String MONTH_SALARY_QUESTION_TELEGRAM_DATA = "MONTH_SALARY_QUESTION";
-    private static final String DATA_ACCEPTED_TELEGRAM_DATA = "DATA_ACCEPTED";
-    private static final String DATA_DECLINED_TELEGRAM_DATA = "DATA_DECLINED";
+@Component
+public class _5_SettingSalariesCommand extends Command {
+
+    private static final TelegramDataEnum MONTH_SALARY_TELEGRAM_DATA = MONTH_SALARY_QUESTION;
+    private static final TelegramDataEnum SUCCESS_TELEGRAM_DATA = DATA_ACCEPTED;
+    private static final TelegramDataEnum ERROR_TELEGRAM_DATA = DATA_DECLINED;
 
     private static final Map<String, String> commandButtonsMap = new HashMap<>();
 
@@ -42,7 +45,7 @@ public class _6_SettingSalariesCommand extends Command {
 
         try {
             addSalaryAnswer(update, chat, salaries);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             SendMessage sendMessage = getDeclinedSendMessage(update);
             livingWageBot.execute(sendMessage);
         }
@@ -64,15 +67,15 @@ public class _6_SettingSalariesCommand extends Command {
 
 
     private SendMessage getExecutedSendMessage(Update update) {
-        String message = telegramDataService.getTelegramDataByName(DATA_ACCEPTED_TELEGRAM_DATA).getTextMessage();
+        String message = SUCCESS_TELEGRAM_DATA.getTextMessage();
         SendMessage sendMessage = getSimpleSendMessage(update, message);
-        sendMessage.setReplyMarkup(getInlineKeyboard(commandButtonsMap));
+        sendMessage.setReplyMarkup(getOneLinedKeyboard(commandButtonsMap));
 
         return sendMessage;
     }
 
-    private SendMessage getDeclinedSendMessage(Update update){
-        String message = telegramDataService.getTelegramDataByName(DATA_DECLINED_TELEGRAM_DATA).getTextMessage();
+    private SendMessage getDeclinedSendMessage(Update update) {
+        String message = ERROR_TELEGRAM_DATA.getTextMessage();
 
         return getSimpleSendMessage(update, message);
     }
@@ -86,7 +89,7 @@ public class _6_SettingSalariesCommand extends Command {
 
     protected String getMonthSalaryQuestion(Chat chat) {
 
-        String messagePattern = telegramDataService.getTelegramDataByName(MONTH_SALARY_QUESTION_TELEGRAM_DATA).getTextMessage();
+        String messagePattern = MONTH_SALARY_TELEGRAM_DATA.getTextMessage();
         String parsedMonthAndYear = getParsedMonthAndYear(chat);
 
         return String.format(messagePattern, parsedMonthAndYear);

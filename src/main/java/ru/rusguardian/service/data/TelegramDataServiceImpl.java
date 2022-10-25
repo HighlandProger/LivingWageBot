@@ -5,15 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.rusguardian.domain.RegionLivingWage;
-import ru.rusguardian.domain.TelegramData;
-import ru.rusguardian.service.data.exception.EntityNotFoundException;
+import ru.rusguardian.domain.TelegramDataDto;
 import ru.rusguardian.util.FileUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,15 +20,15 @@ import java.util.Optional;
 public class TelegramDataServiceImpl {
 
     private static final String DATA_FILE_PATH = "/data/telegram_data.json";
-    private List<TelegramData> telegramDataList = new ArrayList<>();
+    private final List<TelegramDataDto> telegramDataList = new ArrayList<>();
 
     @PostConstruct
     private void initData() {
         String text = FileUtils.getTextFromResourcesFile(DATA_FILE_PATH);
         JsonArray data = JsonParser.parseString(text).getAsJsonArray();
-        for(JsonElement element : data){
+        for (JsonElement element : data) {
             JsonObject object = element.getAsJsonObject();
-            TelegramData telegramData = new TelegramData();
+            TelegramDataDto telegramData = new TelegramDataDto();
             telegramData.setName(object.get("name").getAsString());
             telegramData.setTextMessage(object.get("textMessage").getAsString());
             telegramData.setPhotoId(object.get("photoId").getAsString());
@@ -42,16 +38,16 @@ public class TelegramDataServiceImpl {
         }
     }
 
-    public TelegramData getTelegramDataByName(String name) {
-        Optional<TelegramData> telegramDataOptional = telegramDataList.stream().filter(s -> s.getName().equals(name)).findFirst();
-        if(telegramDataOptional.isEmpty()){
+    public TelegramDataDto getTelegramDataByName(String name) {
+        Optional<TelegramDataDto> telegramDataOptional = telegramDataList.stream().filter(s -> s.getName().equals(name)).findFirst();
+        if (telegramDataOptional.isEmpty()) {
             log.error("Telegram data with name {} not found", name);
             throw new NoSuchElementException();
         }
         return telegramDataOptional.get();
     }
 
-    public List<TelegramData> getTelegramData() {
+    public List<TelegramDataDto> getTelegramData() {
         return this.telegramDataList;
     }
 

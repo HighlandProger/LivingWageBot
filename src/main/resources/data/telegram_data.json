@@ -6,7 +6,13 @@
     "stickerId": ""
   },
   {
-    "name": "SET REGION",
+    "name": "NOT_FOUND",
+    "textMessage": "Ошибка. Команда %s не найдена. Попробуйте /start",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "SET_REGION",
     "textMessage": "Пожалуйста, напишите название Вашего региона",
     "photoId": "",
     "stickerId": ""
@@ -68,6 +74,102 @@
   {
     "name": "NOT_SUCCESS_CLIENT",
     "textMessage": "Извините, но Вы не подходите под программу \"Социальный контракт\" Для того чтобы узнать как это возможно исправить, Вы можете воспользоваться консультацией наших специалистов (стоимость 1.000 руб.) Записаться Вы можете по ссылке @Teleport_to_the_moon",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "BASKET_MESSAGE",
+    "textMessage": "У вас пока нет покупок в корзине",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "CALL_QUESTION",
+    "textMessage": "Телефон Вашего персонального менеджера Компании \"Центр Бизнес-Планирования\"\n\n+7 (999) 838-87-83\n\nс 9:00 до 21:00 \uD83D\uDD58 по мск\nбез перерывов и выходных",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "WRITE_QUESTION",
+    "textMessage": "Напишите сообщение",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "CATALOG",
+    "textMessage": "Каталог товаров:",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "STOCKS",
+    "textMessage": "Вам предоставлена персональная скидка - 10% на готовый Бизнес-План! Предложение ограничено до 30-го ноября включительно!",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "ALL_STOCKS",
+    "textMessage": "✅ Официальное партнерство с банком \"Тинькофф\", откроем ИП БЕСПЛАТНО!\n\n✅ Порекомендуйте Нас друзьям и получите 1.000 рублей на свой счет!\n\n✅ Хотите получить ответ специалиста БЕСПЛАТНО❓- задайте свой Вопрос в комментарии под любым нашим видеороликом на You Tube!",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "YOU_TUBE_LINK",
+    "textMessage": "https://www.youtube.com/channel/UC3nnmO0POSK6wy5eV8IQnww",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "PREPARED_BUSINESS_PLAN",
+    "textMessage": "В настоящий момент наш каталог готовых проектов находится в стадии разработки, поэтому Вы можете обратиться к нам за индивидуальным Бизнес-Планом",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "INDIVIDUAL_BUSINESS_PLAN",
+    "textMessage": "Для заказа индивидуального бизнес-плана по Вашим критериям напишите следующую информацию: \n 1. Ваш регион\n 2. Тема Вашего бизнес-плана",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "MAIN_MENU",
+    "textMessage": "Вы в главном меню",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "CLIENT_MESSAGE",
+    "textMessage": "Ваше сообщение принято",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "OWNER_MESSAGE",
+    "textMessage": "Сообщение от @%s:\n%s",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "CONTACTS",
+    "textMessage": "Пожалуйста, выберите способ обращения",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "AVITO",
+    "textMessage": "Ссылка",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "SITE",
+    "textMessage": "Ссылка",
+    "photoId": "",
+    "stickerId": ""
+  },
+  {
+    "name": "ABOUT_US",
+    "textMessage": "О нас...",
     "photoId": "",
     "stickerId": ""
   }

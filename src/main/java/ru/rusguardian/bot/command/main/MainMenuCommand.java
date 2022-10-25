@@ -8,33 +8,30 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.TelegramDataEnum;
-import ru.rusguardian.util.TelegramUtils;
+
+import java.util.List;
 
 import static ru.rusguardian.domain.TelegramDataEnum.NOT_FOUND;
 
 @Component
 @Slf4j
-public class NotFoundCommand extends Command {
+public class MainMenuCommand extends Command {
 
     private static final TelegramDataEnum TELEGRAM_DATA = NOT_FOUND;
 
     @Override
+    protected CommandName getType() {
+        return CommandName.MAIN_MENU;
+    }
+
+    @Override
     protected void mainExecute(Update update) throws TelegramApiException {
 
-        String chatId = TelegramUtils.getChatIdString(update);
-
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(chatId)
-                .text(String.format(TELEGRAM_DATA.getTextMessage(), TelegramUtils.getTextFromUpdate(update)))
-                .build();
-
+        List<List<String>> replyButtonLines = getMainReplyButtonLines();
+        SendMessage sendMessage = getSendMessageWithTelegramDataAndReplyKeyboard(update, TELEGRAM_DATA, replyButtonLines);
 
         livingWageBot.execute(sendMessage);
     }
 
-    @Override
-    protected CommandName getType() {
-        return CommandName.NOT_FOUND;
-    }
 
 }

@@ -69,13 +69,16 @@ public class SendBotMessageService {
                 if (isStatusSettingSalaries(chat)) {
                     return CommandName.SETTING_SALARIES_QUESTION;
                 }
+                if (isStatusWritingMessage(chat)) {
+                    return CommandName.CLIENT_MESSAGE;
+                }
 
                 throw new NoSuchElementException();
             }
             return commandNameOptional.get();
         } catch (NoSuchElementException e) {
             log.warn("Command with name {} not found", incomeMessage);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             log.info(e.getMessage());
         }
 
@@ -92,6 +95,10 @@ public class SendBotMessageService {
 
     private boolean isStatusSettingSalaries(Chat chat) {
         return chat.getStatus() == Status.SETTING_SALARIES;
+    }
+
+    private boolean isStatusWritingMessage(Chat chat) {
+        return chat.getStatus() == Status.WRITING_MESSAGE;
     }
 
     private String getCallbackQuery(Update update) {

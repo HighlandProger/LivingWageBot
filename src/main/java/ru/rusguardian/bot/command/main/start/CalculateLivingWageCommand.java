@@ -8,26 +8,39 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.Status;
+import ru.rusguardian.domain.TelegramDataEnum;
+import ru.rusguardian.service.data.exception.EntityNotFoundException;
+
+import static ru.rusguardian.domain.TelegramDataEnum.SET_REGION;
 
 @Component
 @Slf4j
-public class _1_ChooseRegionCommand extends Command {
+public class CalculateLivingWageCommand extends Command {
 
-    private static final String TELEGRAM_DATA_NAME = "SET REGION";
+    private static final TelegramDataEnum TELEGRAM_DATA = SET_REGION;
 
     @Override
     protected CommandName getType() {
-        return CommandName.CHOOSE_REGION;
+        return CommandName.CALCULATE_LIVING_WAGE;
     }
 
     @Override
-    protected void mainExecute(Update update) throws TelegramApiException {
+    public void mainExecute(Update update) throws TelegramApiException {
 
-        changeUserStatus(update, Status.SETTING_REGION);
+        setUserStatusSettingRegion(update);
 
         SendMessage sendMessage = getSendMessage(update);
 
         livingWageBot.execute(sendMessage);
+    }
+
+    private void setUserStatusSettingRegion(Update update) {
+        try {
+            changeUserStatus(update, Status.SETTING_REGION);
+        } catch (EntityNotFoundException e) {
+            createDefaultUser(update);
+            changeUserStatus(update, Status.SETTING_REGION);
+        }
     }
 
     private SendMessage getSendMessage(Update update) {
@@ -36,7 +49,7 @@ public class _1_ChooseRegionCommand extends Command {
     }
 
     private String getCallbackMessage() {
-        return telegramDataService.getTelegramDataByName(TELEGRAM_DATA_NAME).getTextMessage();
+        return TELEGRAM_DATA.getTextMessage();
     }
 
 }

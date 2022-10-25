@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command.main.start;
+package ru.rusguardian.bot.command.main.calculate_living_wage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,14 +9,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.domain.Chat;
+import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.service.data.RegionLivingWageServiceImpl;
 import ru.rusguardian.util.TelegramEditMessageUtils;
 import ru.rusguardian.util.TelegramUtils;
 
-@Component
-public class _3_DefaultFamilyCommand extends Command {
+import static ru.rusguardian.domain.TelegramDataEnum.SET_FAMILY;
 
-    private static final String SET_FAMILY_TELEGRAM_DATA = "SET_FAMILY";
+@Component
+public class _2_DefaultFamilyCommand extends Command {
+
+    private static final TelegramDataEnum TELEGRAM_DATA = SET_FAMILY;
 
     @Autowired
     private RegionLivingWageServiceImpl regionServiceImpl;
@@ -34,7 +37,7 @@ public class _3_DefaultFamilyCommand extends Command {
     }
 
     private SendMessage getSetFamilySendMessage(Update update) {
-        String message = telegramDataService.getTelegramDataByName(SET_FAMILY_TELEGRAM_DATA).getTextMessage();
+        String message = TELEGRAM_DATA.getTextMessage();
         SendMessage sendMessage = getSimpleSendMessage(update, message);
         sendMessage.setReplyMarkup(getSetFamilyInlineKeyboard(update));
 

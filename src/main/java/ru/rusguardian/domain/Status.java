@@ -5,5 +5,6 @@ public enum Status {
     SETTING_REGION,
     SETTING_FAMILY,
     SETTING_SALARIES,
+    WRITING_MESSAGE,
     EXECUTED
 }

@@ -29,7 +29,7 @@ public class FileUtils {
         }
     }
 
-    private static File getTempFileByName(String resourcePath) throws IOException{
+    private static File getTempFileByName(String resourcePath) throws IOException {
         String[] fileName = resourcePath.substring(resourcePath.lastIndexOf("/") + 1).split("\\.");
         return File.createTempFile(fileName[0], "." + fileName[1]);
     }
@@ -43,6 +43,7 @@ public class FileUtils {
         }
         return caption;
     }
+
     public static String getTextFromResourcesFile(String resourcePath) {
         String caption = "";
         File resourceFile = getFileFromResources(resourcePath);

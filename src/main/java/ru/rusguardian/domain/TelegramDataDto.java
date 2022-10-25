@@ -10,7 +10,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TelegramData {
+public class TelegramDataDto {
 
     private String name;
     private String textMessage;
@@ -20,7 +20,7 @@ public class TelegramData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TelegramData that)) return false;
+        if (!(o instanceof TelegramDataDto that)) return false;
         if (!super.equals(o)) return false;
         return getName().equals(that.getName()) && Objects.equals(getTextMessage(), that.getTextMessage()) && Objects.equals(getPhotoId(), that.getPhotoId()) && Objects.equals(getStickerId(), that.getStickerId());
     }

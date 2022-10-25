@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command.main.start;
+package ru.rusguardian.bot.command.main.calculate_living_wage;
 
 import info.debatty.java.stringsimilarity.RatcliffObershelp;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +10,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.command.Command;
 import ru.rusguardian.bot.command.CommandName;
+import ru.rusguardian.bot.command.main.start.CalculateLivingWageCommand;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.RegionLivingWage;
+import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.util.TelegramUtils;
 
 import java.rmi.NoSuchObjectException;
@@ -20,19 +22,21 @@ import java.util.List;
 import java.util.Locale;
 
 import static ru.rusguardian.domain.Status.SETTING_FAMILY;
+import static ru.rusguardian.domain.TelegramDataEnum.ERROR_REGION_NAME;
+import static ru.rusguardian.domain.TelegramDataEnum.SUCCESS_REGION_NAME;
 
 @Component
 @Slf4j
-public class _2_RegionNameCommand extends Command {
+public class _1_RegionNameCommand extends Command {
 
-    private static final String SUCCESS_TELEGRAM_DATA = "SUCCESS_REGION_NAME";
-    private static final String ERROR_TELEGRAM_DATA = "ERROR_REGION_NAME";
-
-    @Autowired
-    private _1_ChooseRegionCommand chooseRegionCommand;
+    private static final TelegramDataEnum SUCCESS_TELEGRAM_DATA = SUCCESS_REGION_NAME;
+    private static final TelegramDataEnum ERROR_TELEGRAM_DATA = ERROR_REGION_NAME;
 
     @Autowired
-    private _3_DefaultFamilyCommand defaultFamilyCommand;
+    private CalculateLivingWageCommand chooseRegionCommand;
+
+    @Autowired
+    private _2_DefaultFamilyCommand defaultFamilyCommand;
 
     @Override
     protected CommandName getType() {
@@ -89,17 +93,17 @@ public class _2_RegionNameCommand extends Command {
     }
 
     private SendMessage getSuccessSendMessage(Update update) {
-        String message = telegramDataService.getTelegramDataByName(SUCCESS_TELEGRAM_DATA).getTextMessage();
+        String message = SUCCESS_TELEGRAM_DATA.getTextMessage();
         return getSimpleSendMessage(update, message);
     }
 
     private SendMessage getErrorSendMessage(Update update, String wrongRegionName) {
-        String message = telegramDataService.getTelegramDataByName(ERROR_TELEGRAM_DATA).getTextMessage();
+        String message = ERROR_TELEGRAM_DATA.getTextMessage();
 
         SendMessage sendMessage = getSimpleSendMessage(update, message);
 
         List<String> possibleRegionNames = getPossibleRegionNames(wrongRegionName);
-        InlineKeyboardMarkup inlineKeyboardMarkup = getPossibleRegionsInlineKeyboard(possibleRegionNames);
+        InlineKeyboardMarkup inlineKeyboardMarkup = getMultipleLinedInlineKeyboard(possibleRegionNames);
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);
 
         return sendMessage;
