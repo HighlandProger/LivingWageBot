@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command;
+package ru.rusguardian.bot.command.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,6 @@ public class SendBotMessageService {
 
         log.debug(update.toString());
         String incomeMessage = "";
-
 
         if (update.hasMessage()) {
             incomeMessage = update.getMessage().getText();
@@ -72,7 +71,20 @@ public class SendBotMessageService {
                 if (isStatusWritingMessage(chat)) {
                     return CommandName.CLIENT_MESSAGE;
                 }
-
+                if (isStatusAdminSettingAction(chat) && update.hasCallbackQuery()) {
+                    if (update.getCallbackQuery().getData().equals("Подтвердить")) {
+                        return CommandName.CONFIRM_ACTION;
+                    }
+                    if (update.getCallbackQuery().getData().equals("В главное меню")) {
+                        return CommandName.MAIN_MENU;
+                    }
+                }
+                if (isStatusAdminSettingAction(chat)) {
+                    return CommandName.SEND_ACTION;
+                }
+                if (isStatusAdminSettingAboutUs(chat)) {
+                    return CommandName.SEND_ABOUT_US;
+                }
                 throw new NoSuchElementException();
             }
             return commandNameOptional.get();
@@ -99,6 +111,14 @@ public class SendBotMessageService {
 
     private boolean isStatusWritingMessage(Chat chat) {
         return chat.getStatus() == Status.WRITING_MESSAGE;
+    }
+
+    private boolean isStatusAdminSettingAction(Chat chat) {
+        return chat.getStatus() == Status.ADMIN_SETTING_ACTION;
+    }
+
+    private boolean isStatusAdminSettingAboutUs(Chat chat) {
+        return chat.getStatus() == Status.ADMIN_SETTING_ABOUT_US;
     }
 
     private String getCallbackQuery(Update update) {

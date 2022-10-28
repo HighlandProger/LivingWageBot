@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.rusguardian.bot.command.Command;
-import ru.rusguardian.bot.command.CommandName;
+import ru.rusguardian.bot.command.service.Command;
+import ru.rusguardian.bot.command.service.CommandName;
 import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.util.TelegramUtils;
 
@@ -22,10 +22,11 @@ public class NotFoundCommand extends Command {
     protected void mainExecute(Update update) throws TelegramApiException {
 
         String chatId = TelegramUtils.getChatIdString(update);
+        String incomeMessage = TelegramUtils.getTextFromUpdate(update);
 
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
-                .text(String.format(TELEGRAM_DATA.getTextMessage(), TelegramUtils.getTextFromUpdate(update)))
+                .text(String.format(TELEGRAM_DATA.getTextMessage(), incomeMessage))
                 .build();
 
 

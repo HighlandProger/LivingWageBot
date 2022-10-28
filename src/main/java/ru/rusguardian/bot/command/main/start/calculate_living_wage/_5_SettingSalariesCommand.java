@@ -1,11 +1,12 @@
-package ru.rusguardian.bot.command.main.calculate_living_wage;
+package ru.rusguardian.bot.command.main.start.calculate_living_wage;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.rusguardian.bot.command.Command;
-import ru.rusguardian.bot.command.CommandName;
+import ru.rusguardian.bot.command.service.Command;
+import ru.rusguardian.bot.command.service.CommandName;
+import ru.rusguardian.bot.command.service.SendMessageService;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.RegionLivingWage;
 import ru.rusguardian.domain.Status;
@@ -20,7 +21,7 @@ import java.util.Map;
 import static ru.rusguardian.domain.TelegramDataEnum.*;
 
 @Component
-public class _5_SettingSalariesCommand extends Command {
+public class _5_SettingSalariesCommand extends Command implements SendMessageService {
 
     private static final TelegramDataEnum MONTH_SALARY_TELEGRAM_DATA = MONTH_SALARY_QUESTION;
     private static final TelegramDataEnum SUCCESS_TELEGRAM_DATA = DATA_ACCEPTED;
@@ -30,6 +31,11 @@ public class _5_SettingSalariesCommand extends Command {
 
     static {
         commandButtonsMap.put("/resultCommand", "Посмотреть результат");
+    }
+
+    @Override
+    public Command getCommand() {
+        return this;
     }
 
     @Override
@@ -96,8 +102,7 @@ public class _5_SettingSalariesCommand extends Command {
     }
 
     private String getParsedMonthAndYear(Chat chat) {
-        List<Integer> clientSalaries = chat.getSalaries();
-        int monthsToRoll = 3 - clientSalaries.size();
+        int monthsToRoll = 3 - chat.getSalaries().size();
         return DateUtils.getRolledFormattedDate(monthsToRoll);
     }
 

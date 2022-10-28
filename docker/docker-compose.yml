@@ -8,4 +8,8 @@ services:
     image: living-wage-bot
     network_mode: host
 
+    environment:
+      - "JAVA_OPTS="
+      - spring.profiles.active=prod
+
     restart: always

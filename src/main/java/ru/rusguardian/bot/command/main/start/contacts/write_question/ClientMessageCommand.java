@@ -1,12 +1,14 @@
 package ru.rusguardian.bot.command.main.start.contacts.write_question;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.rusguardian.bot.command.Command;
-import ru.rusguardian.bot.command.CommandName;
+import ru.rusguardian.bot.command.service.Command;
+import ru.rusguardian.bot.command.service.CommandName;
+import ru.rusguardian.bot.command.service.SendMessageService;
 import ru.rusguardian.domain.Status;
 import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.util.TelegramUtils;
@@ -15,7 +17,8 @@ import static ru.rusguardian.domain.TelegramDataEnum.CLIENT_MESSAGE;
 import static ru.rusguardian.domain.TelegramDataEnum.OWNER_MESSAGE;
 
 @Component
-public class ClientMessageCommand extends Command {
+@Slf4j
+public class ClientMessageCommand extends Command implements SendMessageService {
 
     private static final TelegramDataEnum TELEGRAM_DATA = CLIENT_MESSAGE;
     private static final TelegramDataEnum TELEGRAM_DATA2 = OWNER_MESSAGE;
@@ -27,6 +30,11 @@ public class ClientMessageCommand extends Command {
     private String ownerChatId2;
 
     @Override
+    public Command getCommand() {
+        return this;
+    }
+
+    @Override
     protected CommandName getType() {
         return CommandName.CLIENT_MESSAGE;
     }
@@ -36,11 +44,19 @@ public class ClientMessageCommand extends Command {
 
         chatService.updateChatStatus(TelegramUtils.getChatId(update), Status.EXECUTED);
         SendMessage clientSendMessage = getSendMessageByTelegramData(update, TELEGRAM_DATA);
+
+        noticeOwners(update);
+
+        livingWageBot.execute(clientSendMessage);
+    }
+
+    private void noticeOwners(Update update) throws TelegramApiException {
         SendMessage ownerSendMessage = getOwnerSendMessage(update, ownerChatId);
         SendMessage ownerSendMessage2 = getOwnerSendMessage(update, ownerChatId2);
 
-        livingWageBot.execute(clientSendMessage);
+        log.info("Notice owner with chatId: {}", ownerChatId);
         livingWageBot.execute(ownerSendMessage);
+        log.info("Notice owner with chatId: {}", ownerChatId2);
         livingWageBot.execute(ownerSendMessage2);
     }
 

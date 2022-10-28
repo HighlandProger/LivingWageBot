@@ -2,8 +2,8 @@ package ru.rusguardian.bot.command.main;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.rusguardian.bot.command.Command;
-import ru.rusguardian.bot.command.CommandName;
+import ru.rusguardian.bot.command.service.Command;
+import ru.rusguardian.bot.command.service.CommandName;
 
 @Component
 public class EmptyCommand extends Command {

@@ -1,9 +1,10 @@
 package ru.rusguardian.service.data;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.rusguardian.domain.RegionLivingWage;
-import ru.rusguardian.util.FileUtils;
+import ru.rusguardian.repository.RegionLivingWageRepository;
 
 import javax.annotation.PostConstruct;
 import java.rmi.NoSuchObjectException;
@@ -15,23 +16,13 @@ import java.util.Optional;
 @Slf4j
 public class RegionLivingWageServiceImpl {
 
-    private static final String DATA_FILE_PATH = "/data/region_living_wage_data.txt";
     private final List<RegionLivingWage> regionLivingWages = new ArrayList<>();
+    @Autowired
+    RegionLivingWageRepository regionLivingWageRepository;
 
     @PostConstruct
     private void initData() {
-        String[] lines = FileUtils.getTextFromResourcesFile(DATA_FILE_PATH).split("\n");
-
-        for (String line : lines) {
-            String[] params = line.split(",");
-            RegionLivingWage regionLivingWage = new RegionLivingWage();
-            regionLivingWage.setRegionName(params[0]);
-            regionLivingWage.setEmployeeLivingWage(Integer.parseInt(params[1]));
-            regionLivingWage.setRetireeLivingWage(Integer.parseInt(params[2]));
-            regionLivingWage.setChildLivingWage(Integer.parseInt(params[3]));
-
-            regionLivingWages.add(regionLivingWage);
-        }
+        regionLivingWages.addAll(regionLivingWageRepository.findAll());
     }
 
     public List<RegionLivingWage> getRegionLivingWages() {

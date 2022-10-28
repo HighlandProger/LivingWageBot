@@ -1,7 +1,5 @@
 package ru.rusguardian.service.data;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.rusguardian.domain.RegionLivingWage;
 import ru.rusguardian.util.FileUtils;
@@ -10,7 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RegionLivingWageServiceImplTest {
 
@@ -19,11 +17,11 @@ class RegionLivingWageServiceImplTest {
     private final List<RegionLivingWage> regionLivingWages = new ArrayList<>();
 
     @Test
-    void initData(){
+    void initData() {
         int regionsCount = 85;
         String[] lines = FileUtils.getTextFromFile(dataFile).split("\n");
 
-        for (String line : lines){
+        for (String line : lines) {
             String[] params = line.split(",");
             RegionLivingWage regionLivingWage = new RegionLivingWage();
             regionLivingWage.setRegionName(params[0]);

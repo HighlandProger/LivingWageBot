@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command.main.calculate_living_wage;
+package ru.rusguardian.bot.command.main.start.calculate_living_wage;
 
 import info.debatty.java.stringsimilarity.RatcliffObershelp;
 import lombok.extern.slf4j.Slf4j;
@@ -8,9 +8,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.rusguardian.bot.command.Command;
-import ru.rusguardian.bot.command.CommandName;
 import ru.rusguardian.bot.command.main.start.CalculateLivingWageCommand;
+import ru.rusguardian.bot.command.service.Command;
+import ru.rusguardian.bot.command.service.CommandName;
+import ru.rusguardian.bot.command.service.SendMessageService;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.RegionLivingWage;
 import ru.rusguardian.domain.TelegramDataEnum;
@@ -27,7 +28,7 @@ import static ru.rusguardian.domain.TelegramDataEnum.SUCCESS_REGION_NAME;
 
 @Component
 @Slf4j
-public class _1_RegionNameCommand extends Command {
+public class _1_RegionNameCommand extends Command implements SendMessageService {
 
     private static final TelegramDataEnum SUCCESS_TELEGRAM_DATA = SUCCESS_REGION_NAME;
     private static final TelegramDataEnum ERROR_TELEGRAM_DATA = ERROR_REGION_NAME;
@@ -37,6 +38,11 @@ public class _1_RegionNameCommand extends Command {
 
     @Autowired
     private _2_DefaultFamilyCommand defaultFamilyCommand;
+
+    @Override
+    public Command getCommand() {
+        return this;
+    }
 
     @Override
     protected CommandName getType() {

@@ -4,18 +4,23 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.rusguardian.bot.command.Command;
-import ru.rusguardian.bot.command.CommandName;
+import ru.rusguardian.bot.command.service.Command;
+import ru.rusguardian.bot.command.service.CommandName;
+import ru.rusguardian.bot.command.service.SendMessageService;
 import ru.rusguardian.domain.TelegramDataEnum;
-
-import java.util.List;
+import ru.rusguardian.util.TelegramUtils;
 
 import static ru.rusguardian.domain.TelegramDataEnum.SITE;
 
 @Component
-public class SiteCommand extends Command {
+public class SiteCommand extends Command implements SendMessageService {
 
     private static final TelegramDataEnum TELEGRAM_DATA = SITE;
+
+    @Override
+    public Command getCommand() {
+        return this;
+    }
 
     @Override
     protected CommandName getType() {
@@ -25,8 +30,12 @@ public class SiteCommand extends Command {
     @Override
     protected void mainExecute(Update update) throws TelegramApiException {
 
-        List<List<String>> replyButtonLines = getMainMenuReplyButtonLine();
-        SendMessage sendMessage = getSendMessageWithTelegramDataAndReplyKeyboard(update, TELEGRAM_DATA, replyButtonLines);
+        SendMessage sendMessage = getFormattedSendMessage(update);
         livingWageBot.execute(sendMessage);
+    }
+
+    private SendMessage getFormattedSendMessage(Update update) {
+        String formattedMessage = String.format(TELEGRAM_DATA.getTextMessage(), TelegramUtils.getFirstname(update));
+        return getSimpleSendMessage(update, formattedMessage);
     }
 }

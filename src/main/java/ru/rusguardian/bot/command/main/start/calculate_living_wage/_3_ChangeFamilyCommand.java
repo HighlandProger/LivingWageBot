@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command.main.calculate_living_wage;
+package ru.rusguardian.bot.command.main.start.calculate_living_wage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -6,8 +6,8 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.rusguardian.bot.command.Command;
-import ru.rusguardian.bot.command.CommandName;
+import ru.rusguardian.bot.command.service.Command;
+import ru.rusguardian.bot.command.service.CommandName;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.util.TelegramEditMessageUtils;

@@ -37,18 +37,37 @@ public enum TelegramDataEnum {
     CONTACTS,
     AVITO,
     SITE,
-    ABOUT_US;
+    ABOUT_US,
+    ABOUT_US_COMPANY,
+    ABOUT_US_REQUISITES,
+    ADMIN,
+    SET_ACTION,
+    SET_ABOUT_US,
+    SEND_ACTION,
+    SEND_ABOUT_US,
+    CONFIRM_ACTION,
+    CONFIRM_ABOUT_US,
+    FAVOURITES;
 
     private TelegramDataServiceImpl telegramDataService;
 
     private String textMessage;
     private String photoId;
     private String stickerId;
+    private String videoId;
 
     TelegramDataEnum() {
         this.textMessage = "";
         this.photoId = "";
         this.stickerId = "";
+        this.videoId = "";
+    }
+
+    public void setByTelegramDataDto(TelegramDataDto telegramDataDto) {
+        this.textMessage = telegramDataDto.getTextMessage();
+        this.photoId = telegramDataDto.getPhotoId();
+        this.stickerId = telegramDataDto.getStickerId();
+        this.videoId = telegramDataDto.getVideoId();
     }
 
     public String getTextMessage() {
@@ -61,6 +80,10 @@ public enum TelegramDataEnum {
 
     public String getStickerId() {
         return stickerId;
+    }
+
+    public String getVideoId() {
+        return videoId;
     }
 
     @Component
@@ -76,6 +99,7 @@ public enum TelegramDataEnum {
                 telegramDataEnum.textMessage = telegramDataService.getTelegramDataByName(telegramDataEnum.name()).getTextMessage();
                 telegramDataEnum.photoId = telegramDataService.getTelegramDataByName(telegramDataEnum.name()).getPhotoId();
                 telegramDataEnum.stickerId = telegramDataService.getTelegramDataByName(telegramDataEnum.name()).getStickerId();
+                telegramDataEnum.videoId = telegramDataService.getTelegramDataByName(telegramDataEnum.name()).getVideoId();
             }
         }
     }

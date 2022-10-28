@@ -11,7 +11,7 @@ import ru.rusguardian.util.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TelegramDataServiceImplTest {
 
@@ -20,10 +20,10 @@ class TelegramDataServiceImplTest {
     private static final int TELEGRAM_DATA_LIST_SIZE = 29;
 
     @Test
-    void initData(){
+    void initData() {
         String text = FileUtils.getTextFromResourcesFile(DATA_FILE_PATH);
         JsonArray data = JsonParser.parseString(text).getAsJsonArray();
-        for(JsonElement element : data){
+        for (JsonElement element : data) {
             JsonObject object = element.getAsJsonObject();
             TelegramDataDto telegramData = new TelegramDataDto();
             telegramData.setName(object.get("name").getAsString());

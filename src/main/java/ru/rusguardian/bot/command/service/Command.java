@@ -1,8 +1,7 @@
-package ru.rusguardian.bot.command;
+package ru.rusguardian.bot.command.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -12,7 +11,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.rusguardian.bot.LivingWageBot;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.Status;
-import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.service.data.ChatServiceImpl;
 import ru.rusguardian.service.data.RegionLivingWageServiceImpl;
 import ru.rusguardian.service.data.TelegramDataServiceImpl;
@@ -45,8 +43,8 @@ public abstract class Command {
     private static final String CATALOG_BUTTON = "\uD83D\uDECDКаталог";
     private static final String BASKET_BUTTON = "\uD83D\uDED2Корзина";
     private static final String STOCKS_BUTTON = "\uD83C\uDF81Акции";
-    private static final String CONTACTS_BUTTON = "Контакты";
-    private static final String ABOUT_US_BUTTON = "О нас";
+    private static final String CONTACTS_BUTTON = "\uD83D\uDCF1Контакты";
+    private static final String ABOUT_US_BUTTON = "ℹ️О нас";
     private static final String YOUTUBE_BUTTON = "\uD83D\uDCF9You Tube";
     private static final String CALCULATE_BUTTON = "\uD83D\uDCA1Посчитать прожиточный минимум";
 
@@ -68,7 +66,7 @@ public abstract class Command {
 
     protected abstract void mainExecute(Update update) throws TelegramApiException;
 
-    protected List<List<String>> getMainReplyButtonLines() {
+    protected final List<List<String>> getMainReplyButtonLines() {
         return replyButtonLines;
     }
 
@@ -93,6 +91,19 @@ public abstract class Command {
                 .build();
     }
 
+    protected ReplyKeyboardMarkup getDefaultReplyKeyboard(Update update) {
+        List<List<String>> mainReplyButtonLines = new ArrayList<>(getMainReplyButtonLines());
+        if (isUserAdmin(update)) {
+            mainReplyButtonLines.add(List.of("⭕️Администратору"));
+        }
+        return getReplyKeyboard(mainReplyButtonLines);
+    }
+
+    private boolean isUserAdmin(Update update) {
+        Chat chat = chatService.findById(TelegramUtils.getChatId(update));
+        return chat.isAdmin();
+    }
+
     protected ReplyKeyboardMarkup getReplyKeyboard(List<List<String>> replyButtonLines) {
 
         List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -103,7 +114,7 @@ public abstract class Command {
         return ReplyKeyboardMarkup.builder()
                 .selective(true)
                 .resizeKeyboard(true)
-                .oneTimeKeyboard(true)
+                .oneTimeKeyboard(false)
                 .keyboard(keyboardRows)
                 .build();
     }
@@ -149,53 +160,17 @@ public abstract class Command {
         return keyboardRow;
     }
 
-    protected SendMessage getSendMessageByTelegramData(Update update, TelegramDataEnum telegramDataEnum) {
-        String message = telegramDataEnum.getTextMessage();
-        return getSimpleSendMessage(update, message);
-    }
-
-    protected SendMessage getSimpleSendMessage(Update update, String message) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(TelegramUtils.getChatId(update));
-        sendMessage.setText(message);
-
-        return sendMessage;
-    }
-
-    protected SendMessage getSendMessageWithReplyKeyboard(Update update, String message, List<List<String>> replyButtonLines) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(TelegramUtils.getChatId(update));
-        sendMessage.setText(message);
-        sendMessage.setReplyMarkup(getReplyKeyboard(replyButtonLines));
-
-        return sendMessage;
-    }
-
-    protected SendMessage getSendMessageWithTelegramDataAndReplyKeyboard(Update update, TelegramDataEnum telegramDataEnum, List<List<String>> replyButtonLines) {
-        SendMessage sendMessage = getSendMessageByTelegramData(update, telegramDataEnum);
-        sendMessage.setReplyMarkup(getReplyKeyboard(replyButtonLines));
-
-        return sendMessage;
-    }
-
-    protected SendMessage getSendMessageWithTelegramDataAndInlineKeyboard(Update update, TelegramDataEnum telegramDataEnum, List<String> inlineButtonLines) {
-        SendMessage sendMessage = getSendMessageByTelegramData(update, telegramDataEnum);
-        sendMessage.setReplyMarkup(getMultipleLinedInlineKeyboard(inlineButtonLines));
-
-        return sendMessage;
-    }
-
     protected void changeUserStatus(Update update, Status status) {
         Long chatId = TelegramUtils.getChatId(update);
         chatService.updateChatStatus(chatId, status);
         log.debug("Updated status to {} for chat with id = {}", status, chatId);
     }
 
-    protected void createDefaultUser(Update update) {
+    protected Chat createDefaultUser(Update update) {
         Long chatId = TelegramUtils.getChatId(update);
         String username = TelegramUtils.getUsername(update);
-        Chat defaultChat = new Chat(chatId, username, Status.NEW, 1, 0, 0, null, new ArrayList<>());
-        chatService.create(defaultChat);
+        Chat defaultChat = new Chat(chatId, username, Status.NEW, 1, 0, 0, null, new ArrayList<>(), false);
+        return chatService.create(defaultChat);
     }
 
 }

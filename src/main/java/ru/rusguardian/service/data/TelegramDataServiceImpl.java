@@ -1,13 +1,11 @@
 package ru.rusguardian.service.data;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.rusguardian.domain.TelegramDataDto;
-import ru.rusguardian.util.FileUtils;
+import ru.rusguardian.domain.TelegramDataEnum;
+import ru.rusguardian.repository.TelegramDataDtoRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -19,23 +17,13 @@ import java.util.Optional;
 @Slf4j
 public class TelegramDataServiceImpl {
 
-    private static final String DATA_FILE_PATH = "/data/telegram_data.json";
     private final List<TelegramDataDto> telegramDataList = new ArrayList<>();
+    @Autowired
+    TelegramDataDtoRepository telegramDataRepository;
 
     @PostConstruct
     private void initData() {
-        String text = FileUtils.getTextFromResourcesFile(DATA_FILE_PATH);
-        JsonArray data = JsonParser.parseString(text).getAsJsonArray();
-        for (JsonElement element : data) {
-            JsonObject object = element.getAsJsonObject();
-            TelegramDataDto telegramData = new TelegramDataDto();
-            telegramData.setName(object.get("name").getAsString());
-            telegramData.setTextMessage(object.get("textMessage").getAsString());
-            telegramData.setPhotoId(object.get("photoId").getAsString());
-            telegramData.setStickerId(object.get("stickerId").getAsString());
-
-            telegramDataList.add(telegramData);
-        }
+        telegramDataList.addAll(telegramDataRepository.findAll());
     }
 
     public TelegramDataDto getTelegramDataByName(String name) {
@@ -45,6 +33,18 @@ public class TelegramDataServiceImpl {
             throw new NoSuchElementException();
         }
         return telegramDataOptional.get();
+    }
+
+    public void updateTelegramData(TelegramDataDto telegramData) {
+        TelegramDataEnum telegramDataEnum = TelegramDataEnum.valueOf(telegramData.getName());
+        telegramDataEnum.setByTelegramDataDto(telegramData);
+
+        telegramDataRepository.update(
+                telegramData.getName(),
+                telegramData.getTextMessage(),
+                telegramData.getPhotoId(),
+                telegramData.getStickerId(),
+                telegramData.getVideoId());
     }
 
     public List<TelegramDataDto> getTelegramData() {

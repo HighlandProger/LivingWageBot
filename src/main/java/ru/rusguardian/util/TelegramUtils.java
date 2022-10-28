@@ -1,5 +1,6 @@
 package ru.rusguardian.util;
 
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class TelegramUtils {
@@ -34,11 +35,52 @@ public class TelegramUtils {
         return chatId;
     }
 
+    public static InputFile getPhotoInputFile(Update update) {
+        String photoId = "";
+        if (update.hasMessage()) {
+            photoId = update.getMessage().getPhoto().get(0).getFileId();
+        }
+        if (update.hasCallbackQuery()) {
+            photoId = update.getCallbackQuery().getMessage().getPhoto().get(0).getFileId();
+        }
+        return new InputFile(photoId);
+    }
+
+    public static InputFile getVideoInputFile(Update update) {
+        String videoId = "";
+        if (update.hasMessage()) {
+            videoId = update.getMessage().getVideo().getFileId();
+        }
+        if (update.hasCallbackQuery()) {
+            videoId = update.getCallbackQuery().getMessage().getVideo().getFileId();
+        }
+        return new InputFile(videoId);
+    }
+
+    public static String getCaption(Update update) {
+        String caption = "";
+        if (update.hasMessage()) {
+            caption = update.getMessage().getCaption();
+        }
+        if (update.hasCallbackQuery()) {
+            caption = update.getCallbackQuery().getMessage().getCaption();
+        }
+        return caption;
+    }
+
     public static String getUsername(Update update) {
         if (update.hasMessage()) {
             return update.getMessage().getFrom().getUserName();
         } else {
             return update.getCallbackQuery().getFrom().getUserName();
+        }
+    }
+
+    public static String getFirstname(Update update) {
+        if (update.hasMessage()) {
+            return update.getMessage().getFrom().getFirstName();
+        } else {
+            return update.getCallbackQuery().getFrom().getFirstName();
         }
     }
 

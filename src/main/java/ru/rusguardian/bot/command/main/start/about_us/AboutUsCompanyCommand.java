@@ -1,4 +1,4 @@
-package ru.rusguardian.bot.command.main.start;
+package ru.rusguardian.bot.command.main.start.about_us;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,26 +14,21 @@ import ru.rusguardian.domain.TelegramDataEnum;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.rusguardian.domain.TelegramDataEnum.ABOUT_US;
+import static ru.rusguardian.domain.TelegramDataEnum.ABOUT_US_COMPANY;
 
 @Component
-public class AboutUsCommand extends Command implements SendMessageService, SendPhotoService {
+public class AboutUsCompanyCommand extends Command implements SendPhotoService, SendMessageService {
 
-    private static final TelegramDataEnum TELEGRAM_DATA = ABOUT_US;
+    private static final TelegramDataEnum TELEGRAM_DATA = ABOUT_US_COMPANY;
 
     private static final List<List<String>> replyButtonLines = new ArrayList<>();
     private static final List<String> firstLineButtons = new ArrayList<>();
-    private static final List<String> secondLineButtons = new ArrayList<>();
-
-    private static final String REQUISITES_BUTTON = "\uD83D\uDCCBРеквизиты";
     private static final String MAIN_MENU_BUTTON = "\uD83C\uDFE0В главное меню";
 
     static {
-        firstLineButtons.add(REQUISITES_BUTTON);
-        secondLineButtons.add(MAIN_MENU_BUTTON);
+        firstLineButtons.add(MAIN_MENU_BUTTON);
 
         replyButtonLines.add(firstLineButtons);
-        replyButtonLines.add(secondLineButtons);
     }
 
     @Override
@@ -43,7 +38,7 @@ public class AboutUsCommand extends Command implements SendMessageService, SendP
 
     @Override
     protected CommandName getType() {
-        return CommandName.ABOUT_US;
+        return CommandName.ABOUT_US_COMPANY;
     }
 
     @Override
@@ -57,5 +52,6 @@ public class AboutUsCommand extends Command implements SendMessageService, SendP
 
         livingWageBot.execute(sendPhoto);
         livingWageBot.execute(sendMessage);
+
     }
 }

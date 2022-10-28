@@ -4,8 +4,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.rusguardian.bot.command.Command;
-import ru.rusguardian.bot.command.CommandName;
+import ru.rusguardian.bot.command.service.Command;
+import ru.rusguardian.bot.command.service.CommandName;
+import ru.rusguardian.bot.command.service.SendMessageService;
 import ru.rusguardian.domain.TelegramDataEnum;
 
 import java.util.ArrayList;
@@ -14,16 +15,16 @@ import java.util.List;
 import static ru.rusguardian.domain.TelegramDataEnum.CONTACTS;
 
 @Component
-public class ContactsCommand extends Command {
+public class ContactsCommand extends Command implements SendMessageService {
 
     private static final TelegramDataEnum TELEGRAM_DATA = CONTACTS;
 
     private static final List<List<String>> replyButtonLines = new ArrayList<>();
-    private static final String WRITE_MESSAGE_BUTTON = "✍️Написать";
+    private static final String WRITE_MESSAGE_BUTTON = "\uD83D\uDCAC️Написать";
     private static final String CALL_QUESTION_BUTTON = "\uD83D\uDCDEПозвонить";
-    private static final String AVITO_BUTTON = "Авито";
-    private static final String SITE_BUTTON = "Сайт";
-    private static final String MAIN_MENU_BUTTON = "В главное меню";
+    private static final String AVITO_BUTTON = "\uD83D\uDC8EАвито";
+    private static final String SITE_BUTTON = "\uD83C\uDF10Сайт";
+    private static final String MAIN_MENU_BUTTON = "\uD83C\uDFE0В главное меню";
 
     static {
 
@@ -32,6 +33,11 @@ public class ContactsCommand extends Command {
         replyButtonLines.add(List.of(AVITO_BUTTON));
         replyButtonLines.add(List.of(SITE_BUTTON));
         replyButtonLines.add(List.of(MAIN_MENU_BUTTON));
+    }
+
+    @Override
+    public Command getCommand() {
+        return this;
     }
 
     @Override
