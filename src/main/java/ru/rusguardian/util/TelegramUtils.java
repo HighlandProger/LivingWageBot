@@ -1,7 +1,11 @@
 package ru.rusguardian.util;
 
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class TelegramUtils {
 
@@ -92,5 +96,15 @@ public class TelegramUtils {
         if (update.hasMessage()) {
             return update.getMessage().getText();
         } else return update.getCallbackQuery().getData();
+    }
+
+    public static List<MessageEntity> getMessageEntities(Update update){
+        if (update.hasMessage()){
+            return update.getMessage().getCaptionEntities();
+        }
+        if (update.hasCallbackQuery()){
+            return update.getCallbackQuery().getMessage().getCaptionEntities();
+        }
+        throw new NoSuchElementException("Cannot get message entities");
     }
 }

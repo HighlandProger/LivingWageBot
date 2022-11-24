@@ -11,6 +11,7 @@ import ru.rusguardian.bot.command.service.Command;
 import ru.rusguardian.bot.command.service.CommandName;
 import ru.rusguardian.bot.command.service.SendMessageService;
 import ru.rusguardian.domain.TelegramDataEnum;
+import ru.rusguardian.util.TelegramUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public class _2_SendActionCommand extends Command implements SendMessageService,
         } else {
             SendMessage sendMessage = getSimpleSendMessage(update, update.getMessage().getText());
             sendMessage.setReplyMarkup(getMultipleLinedInlineKeyboard(inlineButtons));
+            sendMessage.setEntities(TelegramUtils.getMessageEntities(update));
 
             livingWageBot.execute(sendMessage);
         }

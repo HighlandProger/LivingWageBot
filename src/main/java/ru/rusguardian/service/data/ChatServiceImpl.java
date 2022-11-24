@@ -2,13 +2,13 @@ package ru.rusguardian.service.data;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.Status;
 import ru.rusguardian.repository.ChatRepository;
 import ru.rusguardian.service.data.exception.EntityNotFoundException;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +20,13 @@ public class ChatServiceImpl {
     @Autowired
     private ChatRepository chatRepository;
 
-    private final List<Chat> chats = new ArrayList<>();
+    private List<Chat> chats = new ArrayList<>();
 
-    @PostConstruct
-    private void initData() {
-        chats.addAll(chatRepository.findAll());
+    //Once in a day 8640000
+    @Scheduled(fixedDelay = 8640000, initialDelay = 0)
+    private void initDataFromDb() {
+        log.info("Updating chats");
+        chats = chatRepository.findAll();
     }
 
     public Chat create(Chat chat) {

@@ -13,6 +13,7 @@ public interface AdminService {
         sendPhoto.setChatId(TelegramUtils.getChatId(update));
         sendPhoto.setPhoto(TelegramUtils.getPhotoInputFile(update));
         sendPhoto.setCaption(TelegramUtils.getCaption(update));
+        sendPhoto.setCaptionEntities(TelegramUtils.getMessageEntities(update));
 
         return sendPhoto;
     }
@@ -22,6 +23,7 @@ public interface AdminService {
         sendVideo.setChatId(TelegramUtils.getChatId(update));
         sendVideo.setVideo(TelegramUtils.getVideoInputFile(update));
         sendVideo.setCaption(TelegramUtils.getCaption(update));
+        sendVideo.setCaptionEntities(TelegramUtils.getMessageEntities(update));
 
         return sendVideo;
     }

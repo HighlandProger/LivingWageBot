@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS ncs_bot.region_living_wage CASCADE;
 CREATE TABLE ncs_bot.region_living_wage
 (
     id                     bigserial primary key,
-    region_name            varchar NOT NULL
+    region_name            varchar NOT NULL,
     human_living_wage      integer NOT NULL,
     employee_living_wage   integer NOT NULL,
     retiree_living_wage    integer NOT NULL,
@@ -31,7 +31,8 @@ CREATE TABLE ncs_bot.chats
     employee_count         integer,
     child_count            integer,
     retiree_count          integer,
-    region_living_wage_id  bigint
+    region_living_wage_id  bigint,
+    is_admin               boolean
 );
 
 DROP TABLE IF EXISTS ncs_bot.telegram_data CASCADE;
@@ -41,6 +42,7 @@ CREATE TABLE ncs_bot.telegram_data
     name                   varchar,
     text_message           text,
     photo_id               text,
+    video_id               text,
     sticker_id             text
 );
 

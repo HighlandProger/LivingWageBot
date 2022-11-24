@@ -1,0 +1,10 @@
+ssh root@5.23.55.71
+oDh8UBMr
+pg_dump -h localhost -U bot -F p -f livingWageDump -W region_living_wage_db
+33
+exit
+===================================================
+
+scp root@5.23.55.71:/home/livingWageDump /home/rusguardian/IdeaProjects/LivingWageBot/sql_scripts
+sudo -i -u postgres
+psql region_living_wage_db --file /home/rusguardian/IdeaProjects/LivingWageBot/sql_scripts/livingWageDump
