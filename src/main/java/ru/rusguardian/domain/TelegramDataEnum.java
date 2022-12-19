@@ -47,7 +47,8 @@ public enum TelegramDataEnum {
     SEND_ABOUT_US,
     CONFIRM_ACTION,
     CONFIRM_ABOUT_US,
-    FAVOURITES;
+    FAVOURITES,
+    CLIENT_CHAT;
 
     private TelegramDataServiceImpl telegramDataService;
 

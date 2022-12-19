@@ -22,6 +22,7 @@ public enum CommandName {
     STOCKS("\uD83C\uDF81Акции"),
     YOUTUBE_LINK("\uD83D\uDCF9You Tube"),
     CALCULATE_LIVING_WAGE("\uD83D\uDCA1Посчитать прожиточный минимум"),
+    CLIENT_CHAT("\uD83D\uDC68\u200D\uD83D\uDCBBКлиентский чат"),
 //-----------------------------------------------------------------------------------------
 
     //   CATALOG

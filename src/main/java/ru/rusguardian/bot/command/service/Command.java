@@ -40,26 +40,22 @@ public abstract class Command {
     private static final List<String> firstLineButtons = new ArrayList<>();
     private static final List<String> secondLineButtons = new ArrayList<>();
     private static final List<String> thirdLineButtons = new ArrayList<>();
-    private static final String CATALOG_BUTTON = "\uD83D\uDECDКаталог";
-    private static final String BASKET_BUTTON = "\uD83D\uDED2Корзина";
-    private static final String STOCKS_BUTTON = "\uD83C\uDF81Акции";
-    private static final String CONTACTS_BUTTON = "\uD83D\uDCF1Контакты";
-    private static final String ABOUT_US_BUTTON = "ℹ️О нас";
-    private static final String YOUTUBE_BUTTON = "\uD83D\uDCF9You Tube";
-    private static final String CALCULATE_BUTTON = "\uD83D\uDCA1Посчитать прожиточный минимум";
+    private static final List<String> forthLineButtons = new ArrayList<>();
 
     static {
-        firstLineButtons.add(CATALOG_BUTTON);
-        firstLineButtons.add(BASKET_BUTTON);
-        firstLineButtons.add(STOCKS_BUTTON);
-        secondLineButtons.add(CONTACTS_BUTTON);
-        secondLineButtons.add(ABOUT_US_BUTTON);
-        secondLineButtons.add(YOUTUBE_BUTTON);
-        thirdLineButtons.add(CALCULATE_BUTTON);
+        firstLineButtons.add(CommandName.CATALOG.getName());
+        firstLineButtons.add(CommandName.BASKET.getName());
+        firstLineButtons.add(CommandName.STOCKS.getName());
+        secondLineButtons.add(CommandName.CONTACTS.getName());
+        secondLineButtons.add(CommandName.ABOUT_US.getName());
+        secondLineButtons.add(CommandName.YOUTUBE_LINK.getName());
+        thirdLineButtons.add(CommandName.CALCULATE_LIVING_WAGE.getName());
+        forthLineButtons.add(CommandName.CLIENT_CHAT.getName());
 
         replyButtonLines.add(firstLineButtons);
         replyButtonLines.add(secondLineButtons);
         replyButtonLines.add(thirdLineButtons);
+        replyButtonLines.add(forthLineButtons);
     }
 
     protected abstract CommandName getType();
