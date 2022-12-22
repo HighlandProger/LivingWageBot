@@ -13,6 +13,7 @@ import ru.rusguardian.bot.command.service.CommandName;
 import ru.rusguardian.bot.command.service.SendMessageService;
 import ru.rusguardian.domain.Chat;
 import ru.rusguardian.domain.Status;
+import ru.rusguardian.domain.TelegramDataDto;
 import ru.rusguardian.domain.TelegramDataEnum;
 import ru.rusguardian.util.TelegramUtils;
 
@@ -58,6 +59,7 @@ public class _3_ConfirmActionCommand extends Command implements SendMessageServi
             sendPhoto.setCaptionEntities(update.getCallbackQuery().getMessage().getCaptionEntities());
 
             sendToAllUsers(sendPhoto);
+            updateStocks(sendPhoto);
         } else if (isUpdateHasVideo(update)) {
             SendVideo sendVideo = new SendVideo();
             sendVideo.setVideo(new InputFile(update.getCallbackQuery().getMessage().getVideo().getFileId()));
@@ -65,12 +67,14 @@ public class _3_ConfirmActionCommand extends Command implements SendMessageServi
             sendVideo.setCaptionEntities(update.getCallbackQuery().getMessage().getCaptionEntities());
 
             sendToAllUsers(sendVideo);
+            updateStocks(sendVideo);
         } else {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setText(update.getCallbackQuery().getMessage().getText());
             sendMessage.setEntities(TelegramUtils.getMessageEntities(update));
 
             sendToAllUsers(sendMessage);
+            updateStocks(sendMessage);
         }
 
         SendMessage sendMessage = getSendMessageWithTelegramDataAndReplyKeyboard(update, TELEGRAM_DATA, replyButtonLines);
@@ -123,5 +127,35 @@ public class _3_ConfirmActionCommand extends Command implements SendMessageServi
 
     private boolean isUpdateHasVideo(Update update) {
         return update.getCallbackQuery().getMessage().hasVideo();
+    }
+
+    private void updateStocks(SendMessage sendMessage){
+        TelegramDataDto telegramDataDto = telegramDataService.getTelegramDataByName("STOCKS");
+        telegramDataDto.setTextMessage(sendMessage.getText());
+        telegramDataDto.setPhotoId(null);
+        telegramDataDto.setVideoId(null);
+
+        telegramDataService.updateTelegramData(telegramDataDto);
+        log.info("Telegram data {} updated", telegramDataDto);
+    }
+
+    private void updateStocks(SendPhoto sendPhoto){
+        TelegramDataDto telegramDataDto = telegramDataService.getTelegramDataByName("STOCKS");
+        telegramDataDto.setTextMessage(sendPhoto.getCaption());
+        telegramDataDto.setPhotoId(sendPhoto.getPhoto().getAttachName());
+        telegramDataDto.setVideoId(null);
+
+        telegramDataService.updateTelegramData(telegramDataDto);
+        log.info("Telegram data {} updated", telegramDataDto);
+    }
+
+    private void updateStocks(SendVideo sendVideo){
+        TelegramDataDto telegramDataDto = telegramDataService.getTelegramDataByName("STOCKS");
+        telegramDataDto.setTextMessage(sendVideo.getCaption());
+        telegramDataDto.setPhotoId(null);
+        telegramDataDto.setVideoId(sendVideo.getVideo().getAttachName());
+
+        telegramDataService.updateTelegramData(telegramDataDto);
+        log.info("Telegram data {} updated", telegramDataDto);
     }
 }
