@@ -38,4 +38,8 @@ public class RegionLivingWageServiceImpl {
         }
         return regionLivingWageOptional.get();
     }
+
+    public List<RegionLivingWage> saveAll(List<RegionLivingWage> regionLivingWages) {
+        return regionLivingWageRepository.saveAll(regionLivingWages);
+    }
 }

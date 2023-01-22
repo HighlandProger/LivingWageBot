@@ -12,7 +12,7 @@ public class GetLivingWageHtmlService {
     public Document getHtmlDoc() {
         Document document = null;
         try {
-            document = Jsoup.connect("https://buhguru.com/posobia/prozhitochnyj-minimum-s-01-06-2022-po-regionam-rossii-tablicza.html").get();
+            document = Jsoup.connect("http://potrebkor.ru/prozhitochnyi-minimum.html").get();
         } catch (IOException e) {
             e.printStackTrace();
         }

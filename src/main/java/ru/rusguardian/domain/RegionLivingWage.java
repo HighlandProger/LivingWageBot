@@ -2,10 +2,7 @@ package ru.rusguardian.domain;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "ncs_bot.region_living_wage")
@@ -18,7 +15,8 @@ import javax.persistence.Table;
 public class RegionLivingWage {
 
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(name = "region_name")
     private String regionName;
