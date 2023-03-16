@@ -67,18 +67,16 @@ public class _6_ResultCommand extends Command implements SendMessageService {
     }
 
     private boolean isSuitable(Chat chat) {
-        int resultLivingWage = getLivingWagesSum(chat);
-        List<Integer> salaries = chat.getSalaries();
-        return salaries.stream().filter(e -> e > resultLivingWage).findFirst().isEmpty();
+        int livingWageFor3Months = getLivingWageFor1Month(chat) * 3;
+        int threeMonthsSalary = chat.getSalaries().stream().mapToInt(Integer::intValue).sum();
+        return livingWageFor3Months > threeMonthsSalary;
     }
 
-    private int getLivingWagesSum(Chat chat) {
+    private int getLivingWageFor1Month(Chat chat) {
 
         RegionLivingWage regionLivingWage = chat.getRegionLivingWage();
-        int employeesSum = chat.getEmployeeCount() * regionLivingWage.getEmployeeLivingWage();
-        int childrenSum = chat.getChildCount() * regionLivingWage.getChildLivingWage();
-        int retireeSum = chat.getRetireeCount() * regionLivingWage.getRetireeLivingWage();
+        int humansInFamily = chat.getEmployeeCount() + chat.getRetireeCount() + chat.getChildCount();
 
-        return employeesSum + childrenSum + retireeSum;
+        return humansInFamily * regionLivingWage.getHumanLivingWage();
     }
 }

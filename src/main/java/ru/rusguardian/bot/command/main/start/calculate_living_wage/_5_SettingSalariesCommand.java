@@ -109,11 +109,9 @@ public class _5_SettingSalariesCommand extends Command implements SendMessageSer
     protected int getLivingWagesSum(Chat chat) {
 
         RegionLivingWage regionLivingWage = chat.getRegionLivingWage();
-        int employeesSum = chat.getEmployeeCount() * regionLivingWage.getEmployeeLivingWage();
-        int childrenSum = chat.getChildCount() * regionLivingWage.getChildLivingWage();
-        int retireeSum = chat.getRetireeCount() * regionLivingWage.getRetireeLivingWage();
+        int humansInFamily = chat.getEmployeeCount() + chat.getRetireeCount() + chat.getChildCount();
 
-        return employeesSum + childrenSum + retireeSum;
+        return humansInFamily * regionLivingWage.getHumanLivingWage();
     }
 
 }
