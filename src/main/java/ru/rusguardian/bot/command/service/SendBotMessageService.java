@@ -46,7 +46,7 @@ public class SendBotMessageService {
         Command command = map.get(commandName);
 
         try {
-            command.mainExecute(update);
+            command.process(update);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

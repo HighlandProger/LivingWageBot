@@ -2,6 +2,7 @@ package ru.rusguardian.bot.command.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -35,6 +36,8 @@ public abstract class Command {
     @Autowired
     protected TelegramDataServiceImpl telegramDataService;
 
+    private static final String EXCEPTION_MESSAGE = "Что-то пошло не так, пожалуйста, попробуйте нажать \"/start\". Или обратитесь в поддержку @Sotsialnyy_BusinessMan";
+
     private static final List<List<String>> replyButtonLines = new ArrayList<>();
 
     private static final List<String> firstLineButtons = new ArrayList<>();
@@ -44,13 +47,13 @@ public abstract class Command {
 
     static {
         firstLineButtons.add(CommandName.CATALOG.getName());
-        firstLineButtons.add(CommandName.BASKET.getName());
+        firstLineButtons.add(CommandName.CLIENT_CHAT.getName());
         firstLineButtons.add(CommandName.STOCKS.getName());
         secondLineButtons.add(CommandName.CONTACTS.getName());
         secondLineButtons.add(CommandName.ABOUT_US.getName());
         secondLineButtons.add(CommandName.YOUTUBE_LINK.getName());
         thirdLineButtons.add(CommandName.CALCULATE_LIVING_WAGE.getName());
-        forthLineButtons.add(CommandName.CLIENT_CHAT.getName());
+        forthLineButtons.add("тест на 350.000 руб. \uD83E\uDD11");
 
         replyButtonLines.add(firstLineButtons);
         replyButtonLines.add(secondLineButtons);
@@ -61,6 +64,18 @@ public abstract class Command {
     protected abstract CommandName getType();
 
     protected abstract void mainExecute(Update update) throws TelegramApiException;
+
+    protected void process(Update update) throws TelegramApiException {
+        try{
+            mainExecute(update);
+        } catch (TelegramApiException | RuntimeException e){
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(TelegramUtils.getChatId(update));
+            sendMessage.setText(EXCEPTION_MESSAGE);
+
+            livingWageBot.execute(sendMessage);
+        }
+    }
 
     protected final List<List<String>> getMainReplyButtonLines() {
         return replyButtonLines;
@@ -115,15 +130,6 @@ public abstract class Command {
                 .build();
     }
 
-    protected ReplyKeyboardMarkup getOneRowReplyKeyboard(List<String> replyButtons) {
-
-        return ReplyKeyboardMarkup.builder()
-                .selective(true)
-                .resizeKeyboard(true)
-                .oneTimeKeyboard(true)
-                .keyboard(List.of(getKeyboardRow(replyButtons)))
-                .build();
-    }
 
     protected InlineKeyboardMarkup getMultipleLinedInlineKeyboard(List<String> buttonLines) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();

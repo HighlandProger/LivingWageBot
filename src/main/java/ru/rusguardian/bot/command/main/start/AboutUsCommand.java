@@ -54,6 +54,7 @@ public class AboutUsCommand extends Command implements SendMessageService, SendP
         sendPhoto.setReplyMarkup(getReplyKeyboard(replyButtonLines));
 
         SendMessage sendMessage = getSendMessageByTelegramData(update, TELEGRAM_DATA);
+        sendMessage.disableWebPagePreview();
 
         livingWageBot.execute(sendPhoto);
         livingWageBot.execute(sendMessage);

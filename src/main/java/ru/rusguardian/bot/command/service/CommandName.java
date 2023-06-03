@@ -20,7 +20,7 @@ public enum CommandName {
     CONTACTS("\uD83D\uDCF1Контакты"),
     ABOUT_US("ℹ️О нас"),
     STOCKS("\uD83C\uDF81Акции"),
-    YOUTUBE_LINK("\uD83D\uDCF9You Tube"),
+    YOUTUBE_LINK("\uD83D\uDCF9YouTube"),
     CALCULATE_LIVING_WAGE("\uD83D\uDCA1Посчитать прожиточный минимум"),
     CLIENT_CHAT("\uD83D\uDC68\u200D\uD83D\uDCBBКлиентский чат"),
 //-----------------------------------------------------------------------------------------
