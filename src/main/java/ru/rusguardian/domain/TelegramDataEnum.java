@@ -38,7 +38,6 @@ public enum TelegramDataEnum {
     AVITO,
     SITE,
     ABOUT_US,
-    ABOUT_US_COMPANY,
     ABOUT_US_REQUISITES,
     ADMIN,
     SET_ACTION,
@@ -47,7 +46,6 @@ public enum TelegramDataEnum {
     SEND_ABOUT_US,
     CONFIRM_ACTION,
     CONFIRM_ABOUT_US,
-    FAVOURITES,
     CLIENT_CHAT;
 
     private TelegramDataServiceImpl telegramDataService;

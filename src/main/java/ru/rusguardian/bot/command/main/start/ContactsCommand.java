@@ -24,10 +24,10 @@ public class ContactsCommand extends Command implements SendMessageService {
     private static final TelegramDataEnum TELEGRAM_DATA = CONTACTS;
 
     private static final List<KeyboardButton> simpleButtonLines = new ArrayList<>();
-    private static final KeyboardButton WRITE_MESSAGE_BUTTON = new KeyboardButton("\uD83D\uDCAC️Написать");
-    private static final KeyboardButton CALL_QUESTION_BUTTON = new KeyboardButton("\uD83D\uDCDEПозвонить");
-    private static final KeyboardButton SITE_BUTTON = new KeyboardButton("\uD83C\uDF10Сайт");
-    private static final KeyboardButton MAIN_MENU_BUTTON = new KeyboardButton("\uD83C\uDFE0В главное меню");
+    private static final KeyboardButton WRITE_MESSAGE_BUTTON = new KeyboardButton(CommandName.WRITE_QUESTION.getName());
+    private static final KeyboardButton CALL_QUESTION_BUTTON = new KeyboardButton(CommandName.CALL_QUESTION.getName());
+    private static final KeyboardButton SITE_BUTTON = new KeyboardButton(CommandName.SITE.getName());
+    private static final KeyboardButton MAIN_MENU_BUTTON = new KeyboardButton(CommandName.MAIN_MENU.getName());
 
     static {
         setSiteWebAppInfo(SITE_BUTTON);

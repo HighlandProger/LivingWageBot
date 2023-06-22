@@ -16,19 +16,18 @@ public enum CommandName {
     CONFIRM_ABOUT_US("/confirmAboutUs"),
     //START----------------------------------------------------------------------------------
     CATALOG("\uD83D\uDECDКаталог"),
-    BASKET("\uD83D\uDED2Корзина"),
     CONTACTS("\uD83D\uDCF1Контакты"),
     ABOUT_US("ℹ️О нас"),
     STOCKS("\uD83C\uDF81Акции"),
     YOUTUBE_LINK("\uD83D\uDCF9YouTube"),
     CALCULATE_LIVING_WAGE("\uD83D\uDCA1Посчитать прожиточный минимум"),
-    CLIENT_CHAT("\uD83D\uDC68\u200D\uD83D\uDCBBКлиентский чат"),
+    CLIENT_CHAT("\uD83D\uDC68\uD83C\uDFFC\u200D\uD83D\uDCBBЧат"),
 //-----------------------------------------------------------------------------------------
 
     //   CATALOG
     PREPARED_BUSINESS_PLAN("Готовый Бизнес-План"),
     INDIVIDUAL_BUSINESS_PLAN("Индивидуальный Бизнес-План"),
-    FAVOURITES("⭐️Избранное"),
+    CONSULTATION("Консультация"),
 
     //   CONTACTS
     WRITE_QUESTION("\uD83D\uDCAC️Написать"),
@@ -37,7 +36,6 @@ public enum CommandName {
     SITE("\uD83C\uDF10Сайт"),
 
     //   ABOUT_US
-    ABOUT_US_COMPANY("\uD83D\uDCCDО компании"),
     ABOUT_US_REQUISITES("\uD83D\uDCCBРеквизиты"),
 
     //   STOCKS

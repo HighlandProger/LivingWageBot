@@ -23,9 +23,9 @@ public class AdminCommand extends Command implements SendMessageService {
     private static final List<String> firstLineButtons = new ArrayList<>();
     private static final List<String> secondLineButtons = new ArrayList<>();
 
-    private static final String SEND_ACTION_BUTTON = "Отправить акцию";
-    private static final String CHANGE_ABOUT_US_BUTTON = "Изменить \"О нас\"";
-    private static final String MAIN_MENU_BUTTON = "\uD83C\uDFE0В главное меню";
+    private static final String SEND_ACTION_BUTTON = CommandName.SEND_ACTION.getName();
+    private static final String CHANGE_ABOUT_US_BUTTON = CommandName.SET_ABOUT_US.getName();
+    private static final String MAIN_MENU_BUTTON = CommandName.MAIN_MENU.getName();
 
     static {
         firstLineButtons.add(SEND_ACTION_BUTTON);

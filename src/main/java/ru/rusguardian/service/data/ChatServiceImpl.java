@@ -9,9 +9,12 @@ import ru.rusguardian.domain.Status;
 import ru.rusguardian.repository.ChatRepository;
 import ru.rusguardian.service.data.exception.EntityNotFoundException;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -20,26 +23,29 @@ public class ChatServiceImpl {
     @Autowired
     private ChatRepository chatRepository;
 
-    private List<Chat> chats = new ArrayList<>();
+    private Map<Long, Chat> chats = new HashMap<>();
 
     //Once in a day 8640000
     @Scheduled(fixedDelay = 8640000, initialDelay = 0)
     private void initDataFromDb() {
         log.info("Updating chats");
-        chats = chatRepository.findAll();
+        chats = chatRepository.findAll().stream().collect(Collectors.toMap(Chat::getId, Function.identity()));
     }
 
     public Chat create(Chat chat) {
-        chats.add(chat);
+        chats.put(chat.getId(), chat);
         chatRepository.save(chat);
         return chat;
     }
 
     public Chat findById(Long chatId) {
         log.debug("Searching for chat with telegram id = {}", chatId);
-        Optional<Chat> entity = chats.stream().filter(s -> s.getId().equals(chatId)).findFirst();
-        if (entity.isEmpty()) {
-            throw new EntityNotFoundException("Chat with telegram id = " + chatId + " not exists");
+        Optional<Chat> entity;
+        try {
+            entity = Optional.of(chats.get(chatId));
+        } catch (NullPointerException e) {
+            log.info("Chat with id {} not found in map", chatId);
+            throw new EntityNotFoundException(e.getMessage());
         }
         return entity.get();
     }
@@ -53,14 +59,12 @@ public class ChatServiceImpl {
 
     public void updateChat(Chat chat) {
         log.debug("Updating chat {}", chat);
-        Chat oldChat = findById(chat.getId());
         chatRepository.save(chat);
-        chats.remove(oldChat);
-        chats.add(chat);
+        chats.put(chat.getId(), chat);
     }
 
     public List<Chat> getAll() {
-        return chats;
+        return (List<Chat>) chats.values();
     }
 
 }

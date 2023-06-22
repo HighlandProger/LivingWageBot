@@ -22,8 +22,8 @@ public class StocksCommand extends Command implements SendMessageService, SendPh
     private static final List<List<String>> replyButtonLines = new ArrayList<>();
     private static final List<String> firstLineButtons = new ArrayList<>();
     private static final List<String> secondLineButtons = new ArrayList<>();
-    private static final String ALL_STOCKS_BUTTON = "💥Все акции";
-    private static final String MAIN_MENU_BUTTON = "\uD83C\uDFE0В главное меню";
+    private static final String ALL_STOCKS_BUTTON = CommandName.ALL_STOCKS.getName();
+    private static final String MAIN_MENU_BUTTON = CommandName.MAIN_MENU.getName();
 
     static {
         firstLineButtons.add(ALL_STOCKS_BUTTON);

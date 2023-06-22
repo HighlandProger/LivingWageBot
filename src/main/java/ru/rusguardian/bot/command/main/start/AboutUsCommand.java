@@ -25,8 +25,8 @@ public class AboutUsCommand extends Command implements SendMessageService, SendP
     private static final List<String> firstLineButtons = new ArrayList<>();
     private static final List<String> secondLineButtons = new ArrayList<>();
 
-    private static final String REQUISITES_BUTTON = "\uD83D\uDCCBРеквизиты";
-    private static final String MAIN_MENU_BUTTON = "\uD83C\uDFE0В главное меню";
+    private static final String REQUISITES_BUTTON = CommandName.ABOUT_US_REQUISITES.getName();
+    private static final String MAIN_MENU_BUTTON = CommandName.MAIN_MENU.getName();
 
     static {
         firstLineButtons.add(REQUISITES_BUTTON);

@@ -21,7 +21,7 @@ public class AboutUsRequisitesCommand extends Command implements SendMessageServ
 
     private static final List<List<String>> replyButtonLines = new ArrayList<>();
     private static final List<String> firstLineButtons = new ArrayList<>();
-    private static final String MAIN_MENU_BUTTON = "\uD83C\uDFE0В главное меню";
+    private static final String MAIN_MENU_BUTTON = CommandName.MAIN_MENU.getName();
 
     static {
         firstLineButtons.add(MAIN_MENU_BUTTON);
